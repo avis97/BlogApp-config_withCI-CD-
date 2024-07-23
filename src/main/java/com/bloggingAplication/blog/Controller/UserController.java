@@ -26,7 +26,7 @@ public class UserController{
     }
 
     @GetMapping("/getAllUser")
-   // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity getAllUser(){
         List<UserResponseDtos> userList;
         try {

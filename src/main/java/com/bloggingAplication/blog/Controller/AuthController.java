@@ -4,8 +4,11 @@ import com.bloggingAplication.blog.Dtos.JwtAuthRequest;
 import com.bloggingAplication.blog.Dtos.JwtAuthResponse;
 import com.bloggingAplication.blog.Dtos.UserRequestDtos;
 import com.bloggingAplication.blog.Dtos.UserResponseDtos;
+import com.bloggingAplication.blog.Exception.UserNotFoundException;
 import com.bloggingAplication.blog.JwtSecurity.JwtTokenHelper;
+import com.bloggingAplication.blog.JwtSecurity.ValidPassword;
 import com.bloggingAplication.blog.Service.UserService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -37,43 +41,49 @@ public class AuthController{
     AuthenticationManager authenticationManager;
     @Autowired
     UserService userService;
+    @Autowired
+    ValidPassword validPassword;
+
+    private final Logger LOGGER=Logger.getLogger(AuthController.class.getName());
 
     @PostMapping("/login")
-    public JwtAuthResponse createToken(@RequestBody JwtAuthRequest request,
+    public ResponseEntity createToken(@RequestBody JwtAuthRequest request,
                                        HttpServletResponse response) throws Exception{
-
         try {
-            authenticate(request.getUsername(), request.getPassword());
-            UserDetails userDetails = detailsService.loadUserByUsername(request.getUsername());
-            String token = tokenHelper.generateToken(userDetails);
-            ResponseCookie cookie = ResponseCookie.from("accessToken", token)
-                    .httpOnly(true)
-                    .secure(false)
-                    .path("/api/v1/auth/login")
-                    .maxAge(5*60*60)
-                    .build();
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            return JwtAuthResponse.builder().token("Your login done successfully.").build();
-           // return new ResponseEntity(token,HttpStatus.ACCEPTED);
-        } catch (UsernameNotFoundException e) {
-            // Customize the exception message or response if the user is not found
-            throw new UsernameNotFoundException("User not found or invalid credentials");
+            authenticate(request.getUsername(),request.getPassword());
+        } catch (UserNotFoundException e){
+            LOGGER.info("Ok Username And Password incorrect!!");
+            return new ResponseEntity<>("Invalid username or password",HttpStatus.BAD_REQUEST);
         }
+        UserDetails userDetails = detailsService.loadUserByUsername(request.getUsername());
+        String token = tokenHelper.generateToken(userDetails);
+        ResponseCookie cookie = ResponseCookie.from("accessToken", token)
+                .httpOnly(true)
+                .secure(false)
+                .path("/api/v1/auth/login")
+                .maxAge(5*60*60)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        LOGGER.info("Ok Username And Password correct!!");
+        return new ResponseEntity("Your Login Success with credentials.",HttpStatus.ACCEPTED);
     }
 
     private void authenticate(String username, String password) throws Exception {
-
         UsernamePasswordAuthenticationToken Token=new
                 UsernamePasswordAuthenticationToken(username,password);
         try {
-           this.authenticationManager.authenticate(Token);
-        }catch(BadCredentialsException e){
-            throw new Exception("Invalid username or password");
+            this.authenticationManager.authenticate(Token);
+        }catch (BadCredentialsException e){
+            throw new UserNotFoundException("number"+username);
         }
     }
     @PostMapping("/register")
     private ResponseEntity registerNewUser(@RequestBody UserRequestDtos userRequestDtos) throws Exception {
         UserResponseDtos dtos=null;
+
+        if(validPassword.validPassword(userRequestDtos.getPassword())==false){
+            return new ResponseEntity<>("Provide a Valid Password.",HttpStatus.BAD_REQUEST);
+        }
         try{
             dtos=userService.registerNewUser(userRequestDtos);
         }catch (Exception e){

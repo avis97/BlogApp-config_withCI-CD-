@@ -36,7 +36,6 @@ public class PostServiceImpl implements PostService {
         }catch(Exception e){
             throw new UserNotFoundException("Invalid User id");
         }
-
         try{
             category=categoryRepository.findById(postRequestDtos.getCategoryId()).get();
         }catch(Exception e){

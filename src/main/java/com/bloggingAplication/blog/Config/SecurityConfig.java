@@ -32,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/swagger-ui/**",
             "/webjars/**"
     };
+    
     @Autowired
     CustomUserDetails customUserDetails;
     @Autowired
@@ -39,9 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     JwtAuthenticationFilter filter;
 
+
     @Override
     protected void configure(HttpSecurity http)throws Exception{
-
             http
                 .csrf().disable()
                 .authorizeHttpRequests()
@@ -69,6 +70,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Bean
     @Override
    public AuthenticationManager authenticationManagerBean() throws Exception{
-     return super.authenticationManagerBean();
+      return super.authenticationManagerBean();
    }
 }

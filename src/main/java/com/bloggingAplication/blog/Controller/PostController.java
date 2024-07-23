@@ -86,8 +86,7 @@ public class PostController{
     }
     @PostMapping("/upload/image/{postId}")
     public ResponseEntity insertImage(@RequestParam("image") MultipartFile image ,
-                              @PathVariable("postId") Integer postId) throws IOException, PostNotFoundException {
-
+                              @PathVariable("postId") Integer postId) throws IOException, PostNotFoundException{
         PostResponseDto data;
                 try {
                     data = postService.getPostById(postId);

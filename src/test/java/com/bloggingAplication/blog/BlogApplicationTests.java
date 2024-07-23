@@ -7,15 +7,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class BlogApplicationTests {
-
-
 	@Autowired
 	UserRepository repo;
 	@Test
 	void contextLoads(){
 
 	}
-
 	@Test
     public void repoTest(){
 		String className=this.repo.getClass().getName();

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -23,12 +24,15 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    private static final Logger LOGGER=
+            Logger.getLogger(UserServiceImpl.class.getName());
+
     public UserResponseDtos addUser(UserRequestDtos userRequestDtos){
         //convert requestDto to user;
         User user= UserConverter.RequestDtoToUser(userRequestDtos);
 
         userRepository.save(user);
-
+        LOGGER.info("Ok User Register Successfully done and safe in database");
         //convert user to userResponseDtos
         UserResponseDtos userResponseDtos=UserConverter.UserToResponseDto(user);
 
