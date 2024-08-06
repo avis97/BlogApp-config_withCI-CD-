@@ -40,6 +40,8 @@ public class User implements UserDetails{
     @JoinTable(name="user_role",joinColumns = @JoinColumn(name="user",referencedColumnName = "id"),
             inverseJoinColumns =@JoinColumn(name="role",referencedColumnName = "roleId"))
     Set<Role> roles=new HashSet<>();
+    @OneToOne(mappedBy ="user",cascade = CascadeType.ALL)
+    RefreshToken refreshToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,6 +3,7 @@ package com.bloggingAplication.blog.Config;
 import com.bloggingAplication.blog.JwtSecurity.JwtAuthenticationEntryPoint;
 import com.bloggingAplication.blog.JwtSecurity.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,10 +25,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     public static final String[] PUBLIC_URLS={
-        "/api/v1/auth/login",
             "/v3/api-docs",
             "/v2/api-docs",
             "/api/v1/auth/register",
+            "/api/v1/auth/refresh-token",
             "/swagger-resources/**",
             "/swagger-ui/**",
             "/webjars/**"
@@ -39,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     JwtAuthenticationEntryPoint entryPoint;
     @Autowired
     JwtAuthenticationFilter filter;
+    @Value("${base.url}")
+    private String baseUrl;
 
 
     @Override
@@ -46,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             http
                 .csrf().disable()
                 .authorizeHttpRequests()
+                    .antMatchers(baseUrl).permitAll()
                     .antMatchers(PUBLIC_URLS).permitAll()
                     .anyRequest()
                     .authenticated()

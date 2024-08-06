@@ -2,6 +2,7 @@ package com.bloggingAplication.blog.JwtSecurity;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
@@ -14,7 +15,8 @@ import java.util.function.Function;
 @Component
 public class JwtTokenHelper{
     public static final long JWT_TOKEN_VALIDATION = 5 * 60 * 60; // Token expiration time in seconds
-    private String secret = "JwtTokenKey";
+    @Value("${api.key}")
+    private String secret;
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }

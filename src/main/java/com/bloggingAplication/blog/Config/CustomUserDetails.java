@@ -16,7 +16,7 @@ public class CustomUserDetails implements UserDetailsService{
     public UserDetails loadUserByUsername(String username){
         User user;
         try{
-          user=userRepository.findByEmail(username).get();
+          user=userRepository.findByEmail(username);
         }catch(Exception e){
             throw new UsernameNotFoundException("Invalid User Id!!");
         }
