@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController{
+
     @Autowired
     JwtTokenHelper tokenHelper;
     @Autowired
@@ -123,6 +124,7 @@ public class AuthController{
     }
     @PostMapping("/log-out")
     public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response){
+
         Cookie[] cookies = request.getCookies();
         System.out.println(cookies.toString());
         if (cookies != null) {
