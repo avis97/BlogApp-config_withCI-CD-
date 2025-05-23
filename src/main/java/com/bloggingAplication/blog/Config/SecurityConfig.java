@@ -40,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     JwtAuthenticationEntryPoint entryPoint;
     @Autowired
     JwtAuthenticationFilter filter;
-    @Value("${base.url}")
-    private String baseUrl;
+//    @Value("${base.url}")
+//    private String baseUrl;
 
 
     @Override
@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                    .antMatchers(baseUrl).permitAll()
+                    .antMatchers("loaclhost:8080").permitAll()
                     .antMatchers(PUBLIC_URLS).permitAll()
                     .anyRequest()
                     .authenticated()

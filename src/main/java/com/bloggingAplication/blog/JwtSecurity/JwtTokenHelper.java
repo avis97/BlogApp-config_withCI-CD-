@@ -14,7 +14,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenHelper{
-    public static final long JWT_TOKEN_VALIDATION = 5 * 60 * 60; // Token expiration time in seconds
+    public static final long JWT_TOKEN_VALIDATION = 5 * 60 * 60;
+    // Token expiration time in seconds
     @Value("${api.key}")
     private String secret;
     public String getUsernameFromToken(String token) {

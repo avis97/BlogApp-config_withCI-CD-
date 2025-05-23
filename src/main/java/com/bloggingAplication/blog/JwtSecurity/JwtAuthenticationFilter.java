@@ -25,19 +25,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     UserDetailsService userDetailsService;
     @Autowired
     JwtTokenHelper jwtTokenHelper;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException{
 
         String requestToken;
         requestToken=request.getHeader("Authorization");
-       // System.out.println(requestToken);
+
         String userName=null;
         String token=null;
 
         if(requestToken!=null && requestToken.startsWith("Bearer")){
 
             token=requestToken.substring(7);
+
             try {
                 userName = jwtTokenHelper.getUsernameFromToken(token);
             }catch(IllegalArgumentException e){
